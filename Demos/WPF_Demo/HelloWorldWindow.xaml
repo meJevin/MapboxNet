@@ -11,5 +11,7 @@
 
         <mapbox:Map Name="Map" Center="40.729917, -73.990428" Zoom="12"></mapbox:Map>
 
+        <Button Content="Hello" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20"/>
+
     </Grid>
 </Window>

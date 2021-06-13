@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Platforms>x86;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CefSharp.Wpf" Version="90.6.70" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MapboxNetCore\MapboxNetCore.csproj" />
+  </ItemGroup>
+
+</Project>

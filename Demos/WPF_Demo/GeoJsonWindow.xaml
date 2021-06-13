@@ -10,7 +10,7 @@
     <Grid>
 
         <mapbox:Map Name="Map" Center="40.7052768300975, -74.0124907170679" Zoom="5" Styled="Map_Styled"></mapbox:Map>
-        <Image Source="images/pikachu.png" Visibility="Collapsed" Name="pikachuImage"></Image>
+        <Image Source="./images/pikachu.png" Visibility="Collapsed" Name="pikachuImage"></Image>
 
     </Grid>
 </Window>

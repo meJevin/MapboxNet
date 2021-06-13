@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using CefSharp.WinForms;
-using CefSharp;
 using System.IO;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using CefSharp;
+using CefSharp.Wpf;
 using MapboxNetCore;
-using System.Drawing.Imaging;
 
-namespace MapboxNetWinForms
+namespace MapboxNetWPF
 {
-    public partial class Map: UserControl, IMap
+    /// <summary>
+    /// Interaction logic for Map.xaml
+    /// </summary>
+    public partial class Map : UserControl, IMap
     {
         public event EventHandler Ready;
         public event EventHandler Styled;
@@ -28,142 +28,125 @@ namespace MapboxNetWinForms
         public event EventHandler Reloading;
 
 
-        string _accessToken;
         public string AccessToken
         {
-            get => _accessToken;
-
-            set {
-                _accessToken = value;
-                updateAccessToken();
-            }
+            get => (string)GetValue(AccessTokenProperty);
+            set => SetValue(AccessTokenProperty, value);
         }
 
-        void updateAccessToken()
+        public static readonly DependencyProperty AccessTokenProperty = DependencyProperty.Register(nameof(AccessToken), typeof(string), typeof(Map), new PropertyMetadata("", updateAccessToken));
+
+        static void updateAccessToken(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            initializeMap();
+            var map = obj as Map;
+            map.initializeMap();
         }
 
 
-        object _mapStyle = "mapbox://styles/mapbox/streets-v11";
         public object MapStyle
         {
-            get => _mapStyle;
-
-            set
-            {
-                _mapStyle = value;
-                updateMapStyle();
-            }
+            get => GetValue(MapStyleProperty);
+            set => SetValue(MapStyleProperty, value);
         }
 
-        void updateMapStyle()
+        public static readonly DependencyProperty MapStyleProperty = DependencyProperty.Register(nameof(MapStyle), typeof(object), typeof(Map), new PropertyMetadata("mapbox://styles/mapbox/streets-v11", updateMapStyle));
+
+        static void updateMapStyle(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            initializeMap();
+            var map = obj as Map;
+            map.initializeMap();
+
         }
 
-        bool _removeAttribution;
         public bool RemoveAttribution
         {
-            get => _removeAttribution;
-
-            set
-            {
-                _removeAttribution = value;
-                updateAttribution();
-            }
+            get => (bool)GetValue(RemoveAttributionProperty);
+            set => SetValue(RemoveAttributionProperty, value);
         }
 
-        void updateAttribution()
+        public static readonly DependencyProperty RemoveAttributionProperty = DependencyProperty.Register(nameof(RemoveAttribution), typeof(bool), typeof(Map), new PropertyMetadata(false, updateAttribution));
+
+        static void updateAttribution(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            if (IsReady && !_supressChangeEvents)
-                if (RemoveAttribution && !_supressChangeEvents)
-                    SoftExecute("map.getContainer().classList.add('no-attrib');");
+            var map = obj as Map;
+            if (map.IsReady && !map._supressChangeEvents)
+                if (map.RemoveAttribution && !map._supressChangeEvents)
+                    map.SoftExecute("map.getContainer().classList.add('no-attrib');");
                 else
-                    SoftExecute("map.getContainer().classList.remove('no-attrib');");
+                    map.SoftExecute("map.getContainer().classList.remove('no-attrib');");
         }
 
-        GeoLocation _center = new GeoLocation();
         public GeoLocation Center
         {
-            get => _center;
-
-            set
-            {
-                _center = value;
-                updateCenter();
-            }
+            get => (GeoLocation)GetValue(CenterProperty);
+            set => SetValue(CenterProperty, value);
         }
 
-        void updateCenter()
+        public static readonly DependencyProperty CenterProperty = DependencyProperty.Register(nameof(Center), typeof(GeoLocation), typeof(Map), new PropertyMetadata(new GeoLocation(), new PropertyChangedCallback(updateCenter)));
+
+        static void updateCenter(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            if (IsReady && !_supressChangeEvents)
-                SoftInvoke.SetCenter(new { lon = Center.Longitude, lat = Center.Latitude });
+            var map = obj as Map;
+            if (map.IsReady && !map._supressChangeEvents)
+                map.SoftInvoke.SetCenter(new { lon = map.Center.Longitude, lat = map.Center.Latitude });
         }
-
-        double _zoom;
+        
         public double Zoom
         {
-            get => _zoom;
-
-            set
-            {
-                _zoom = value;
-                updateZoom();
-            }
+            get => (double)GetValue(ZoomProperty);
+            set => SetValue(ZoomProperty, value);
         }
 
-        void updateZoom()
+        public static readonly DependencyProperty ZoomProperty = DependencyProperty.Register(nameof(Zoom), typeof(double), typeof(Map), new PropertyMetadata((double)0, new PropertyChangedCallback(updateZoom)));
+        
+        static void updateZoom(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            if (IsReady && !_supressChangeEvents)
-                SoftInvoke.SetZoom(Zoom);
+            var map = obj as Map;
+            if (map.IsReady && !map._supressChangeEvents)
+                map.SoftInvoke.SetZoom(map.Zoom);
         }
-
-        double _pitch;
+        
         public double Pitch
         {
-            get => _pitch;
-
-            set
-            {
-                _pitch = value;
-                updatePitch();
-            }
+            get => (double)GetValue(PitchProperty);
+            set => SetValue(PitchProperty, value);
         }
 
-        void updatePitch()
+        public static readonly DependencyProperty PitchProperty = DependencyProperty.Register(nameof(Pitch), typeof(double), typeof(Map), new PropertyMetadata((double)0, new PropertyChangedCallback(updatePitch)));
+
+        static void updatePitch(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            if (IsReady && !_supressChangeEvents)
-                SoftInvoke.SetPitch(Pitch);
+            var map = obj as Map;
+            if (map.IsReady && !map._supressChangeEvents)
+                map.SoftInvoke.SetPitch(map.Pitch);
         }
-
-        double _bearing;
+        
         public double Bearing
         {
-            get => _bearing;
-
-            set
-            {
-                _bearing = value;
-                updateBearing();
-            }
+            get => (double)GetValue(BearingProperty);
+            set => SetValue(BearingProperty, value);
         }
 
-        void updateBearing()
+        public static readonly DependencyProperty BearingProperty = DependencyProperty.Register(nameof(Bearing), typeof(double), typeof(Map), new PropertyMetadata((double)0, new PropertyChangedCallback(updateBearing)));
+
+
+        static void updateBearing(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            if (IsReady && !_supressChangeEvents)
-                SoftInvoke.SetBearing(Bearing);
+            var map = obj as Map;
+            if (map.IsReady && !map._supressChangeEvents)
+                map.SoftInvoke.SetBearing(map.Bearing);
         }
 
         bool _supressChangeEvents = false;
         bool _arePropertiesUpdated = false;
-
-        bool _isReady;
+        
         public bool IsReady
         {
-            get => _isReady;
-            set => _isReady = value;
+            get => (bool)GetValue(IsReadyProperty);
+            private set => SetValue(IsReadyProperty, value);
         }
+
+        public static readonly DependencyProperty IsReadyProperty = DependencyProperty.Register(nameof(IsReady), typeof(bool), typeof(Map), new PropertyMetadata(false));
 
         public dynamic Invoke
         {
@@ -202,18 +185,19 @@ namespace MapboxNetWinForms
             }
         }
 
-        CefSharp.WinForms.ChromiumWebBrowser webView;
+        CefSharp.Wpf.ChromiumWebBrowser webView;
 
         public Map()
         {
             InitializeComponent();
 
-            if (!Cef.IsInitialized)
+            if(!Cef.IsInitialized)
             {
                 CefSettings settings = new CefSettings();
-                //settings.CefCommandLineArgs.Add("disable-surfaces", "1");
-                //settings.CefCommandLineArgs.Add("disable-gpu-compositing", "1");
-                //settings.CefCommandLineArgs.Add("enable-begin-frame-scheduling", "1");
+                settings.CefCommandLineArgs.Add("disable-surfaces", "1");
+                settings.CefCommandLineArgs.Add("disable-gpu-compositing", "1");
+                settings.CefCommandLineArgs.Add("enable-begin-frame-scheduling", "1");
+                //settings.SetOffScreenRenderingBestPerformanceArgs();
 
                 Cef.Initialize(settings);
             }
@@ -223,34 +207,28 @@ namespace MapboxNetWinForms
         {
             if (webView != null)
             {
-                this.Controls.Remove(webView);
+                MainGrid.Children.Remove(webView);
                 webView = null;
                 Reloading?.Invoke(this, null);
             }
 
             BrowserSettings browserSettings = new BrowserSettings();
-            //browserSettings.WindowlessFrameRate = 60;
+            browserSettings.WindowlessFrameRate = 60;
 
-            webView = new ChromiumWebBrowser();
+            webView = new CefSharp.Wpf.ChromiumWebBrowser();
             webView.IsBrowserInitializedChanged += WebView_IsBrowserInitializedChanged;
-            webView.FrameLoadEnd += WebView_FrameLoadEnd;
             webView.BrowserSettings = browserSettings;
-            this.Controls.Add(webView);
-            webView.Dock = DockStyle.Fill;
+            MainGrid.Children.Add(webView);
         }
 
-        private void WebView_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
-        {
-        }
-
-        private void WebView_IsBrowserInitializedChanged(object sender, CefSharp.IsBrowserInitializedChangedEventArgs e)
+        private void WebView_IsBrowserInitializedChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (webView.IsBrowserInitialized)
             {
                 //webView.ShowDevTools();
                 var script = Core.GetFrameScript(AccessToken, MapStyle);
                 webView.LoadHtml(script, "http://MapboxNet/");
-                webView.JavascriptObjectRepository.Register("relay", new Relay(notify, this), true);
+                webView.JavascriptObjectRepository.Register("relay", new Relay(notify, this.Dispatcher), true);
             }
         }
 
@@ -258,19 +236,24 @@ namespace MapboxNetWinForms
         void ready()
         {
             IsReady = true;
-            updateCenter();
-            updateZoom();
-            updatePitch();
-            updateBearing();
-            updateAttribution();
+            updateCenter(this, new DependencyPropertyChangedEventArgs());
+            updateZoom(this, new DependencyPropertyChangedEventArgs());
+            updatePitch(this, new DependencyPropertyChangedEventArgs());
+            updateBearing(this, new DependencyPropertyChangedEventArgs());
+            updateAttribution(this, new DependencyPropertyChangedEventArgs());
             _arePropertiesUpdated = true;
             Ready?.Invoke(this, null);
             return;
 
         }
 
-        void notify(string json)
+        private void WebView_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
+
+        }
+
+        void notify(string json)
+        {       
             dynamic data = Core.DecodeJsonPlain(json);
 
             if (data.type == "ready")
@@ -323,6 +306,50 @@ namespace MapboxNetWinForms
                 Bearing = data.bearing;
                 _supressChangeEvents = false;
             }
+            //else if (data.type == "mouseDown")
+            //{
+            //    RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+            //    {
+            //        RoutedEvent = Mouse.MouseDownEvent,
+            //        Source = this,
+            //    });
+            //}
+            //else if (data.type == "mouseMove")
+            //{
+            //    RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
+            //    {
+            //        RoutedEvent = Mouse.MouseMoveEvent,
+            //        Source = this,
+            //    });
+            //}
+            //else if (data.type == "mouseUp")
+            //{
+            //    RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+            //    {
+            //        RoutedEvent = Mouse.MouseUpEvent,
+            //        Source = this,
+            //    });
+            //}
+            //else if (data.type == "mouseEnter")
+            //{
+            //    RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
+            //    {
+            //        RoutedEvent = Mouse.MouseEnterEvent,
+            //        Source = this,
+            //    });
+            //}
+            //else if (data.type == "mouseLeave")
+            //{
+            //    RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
+            //    {
+            //        RoutedEvent = Mouse.MouseLeaveEvent,
+            //        Source = this,
+            //    });
+            //}
+            //else if (data.type == "doubleClick")
+            //{
+
+            //}
             else if (data.type == "error")
             {
 
@@ -354,6 +381,11 @@ namespace MapboxNetWinForms
                 if (!task.IsFaulted && response.Success)
                 {
                     result = response.Result;
+
+                    if (result == null)
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
@@ -364,8 +396,7 @@ namespace MapboxNetWinForms
                 {
                     var obj = Core.DecodeJsonPlain(result.ToString());
                     return obj;
-                }
-                catch (Exception e)
+                } catch(Exception e)
                 {
                     // TODO lodge exception when using ToString() on the result in certain cases
                     return null;
@@ -383,8 +414,7 @@ namespace MapboxNetWinForms
             {
                 var result = await webView.EvaluateScriptAsync("exec", new object[] { expression });
                 return Core.DecodeJsonPlain(result.Result.ToString());
-            }
-            catch (Exception e)
+            } catch(Exception e)
             {
                 throw e;
             }
@@ -411,16 +441,17 @@ namespace MapboxNetWinForms
         //    await ExecuteAsync(code);
         //}
 
-        public void AddImage(string id, System.Drawing.Bitmap bitmap)
+        public void AddImage(string id, BitmapSource bitmapSource)
         {
             using (MemoryStream bmp = new MemoryStream())
             {
-                bitmap.Save(bmp, ImageFormat.Png);
-                bmp.Position = 0;
+                var pngEncoder = new PngBitmapEncoder();
+                pngEncoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                pngEncoder.Save(bmp);
                 AddImage(id, bmp);
             }
         }
-
+        
         public void AddImage(string id, MemoryStream stream)
         {
             AddImage(id, Convert.ToBase64String(stream.GetBuffer()));
