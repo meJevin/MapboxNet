@@ -237,7 +237,7 @@
             let foundMarker;
             let i = -1;
             for (i = 0; i < markers.length; ++i) {
-                if (markers[i].getElement().tag == guid) {
+                if (markers[i].getElement().id == guid) {
                     foundMarker = markers[i];
                 }
             }
