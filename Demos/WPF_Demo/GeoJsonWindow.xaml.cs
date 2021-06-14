@@ -67,7 +67,7 @@ namespace DemosWPF
 
         private void RemoveMarker_Click(object sender, RoutedEventArgs e)
         {
-
+            Map.FlyTo(new GeoLocation(20, 40), 10);
         }
 
         private void Map_MarkerClicked(object sender, string e)

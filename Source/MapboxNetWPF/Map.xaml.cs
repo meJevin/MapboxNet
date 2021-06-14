@@ -403,6 +403,13 @@ namespace MapboxNetWPF
         //    await ExecuteAsync(code);
         //}
 
+        public void FlyTo(GeoLocation loc, double zoom)
+        {
+            var code = $"flyTo({loc.Longitude}, {loc.Latitude}, {zoom});";
+
+            Execute(code);
+        }
+
         public void AddMarker(GeoLocation loc, string GUID)
         {
             var code = $"addMarker({loc.Latitude}, {loc.Longitude}, \"{GUID}\");";

@@ -256,6 +256,13 @@
             markers = [];
         }
 
+        function flyTo(long, lat, zoom) {
+			map.flyTo({
+				center: [long, lat],
+				zoom: zoom,
+			});
+        }
+
     </script>
 
 </body>
