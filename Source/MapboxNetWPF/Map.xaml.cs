@@ -225,7 +225,7 @@ namespace MapboxNetWPF
         {
             if (webView.IsBrowserInitialized)
             {
-#if DEBUG
+#if DEBUG && SHOW_DEV_TOOLS_MAPBOX_NET
                 webView.ShowDevTools();
 #endif
                 var script = Core.GetFrameScript(AccessToken, MapStyle);
