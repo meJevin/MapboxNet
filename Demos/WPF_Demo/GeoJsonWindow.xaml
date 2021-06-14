@@ -9,8 +9,13 @@
         Title="Geo JSON" Height="600" Width="800" WindowState="Maximized">
     <Grid>
 
-        <mapbox:Map Name="Map" Center="40.7052768300975, -74.0124907170679" Zoom="5" Styled="Map_Styled"></mapbox:Map>
+        <mapbox:Map Name="Map" Center="40.7052768300975, -74.0124907170679" Zoom="5" Styled="Map_Styled"
+                    MarkerClicked="Map_MarkerClicked"></mapbox:Map>
         <Image Source="./images/pikachu.png" Visibility="Collapsed" Name="pikachuImage"></Image>
 
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <Button Content="Add" Click="AddMarker_Click"/>
+            <Button Content="Remove" Click="RemoveMarker_Click"/>
+        </StackPanel>
     </Grid>
 </Window>

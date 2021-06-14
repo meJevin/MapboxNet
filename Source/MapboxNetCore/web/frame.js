@@ -27,6 +27,15 @@
 		.no-attrib .mapboxgl-ctrl-attrib {
 			display:none !important;
 		}
+		
+      .mapMarker {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border:1px solid gray;
+        background-color:yellow;
+        cursor: pointer;
+      }
 
 		.no-attrib .mapboxgl-ctrl-logo {
 			display:none !important;
@@ -39,6 +48,7 @@
     <div id='map'></div>
     <script>
 
+        let markers = [];
 		var map = null;
 
 		(async () =>
@@ -152,11 +162,23 @@
 					"type": "mouseLeave",
 				});
 			});
+            
+            map.on("click", function(e) {
+                console.log(e.originalEvent.target);
+                if (e.originalEvent.target.className.includes("mapMarker")) {
+                    ping({
+                        "type": "markerClicked",
+                        "guid": e.originalEvent.target.id,
+                    });
+                }
+                else {
+                    ping({
+                        "type": "click",
+                    });
+                }
+            });
 
 			map.on("click", function() {
-				ping({
-					"type": "click",
-				});
 			});
 
 			map.on("dblclick", function() {
@@ -197,6 +219,34 @@
 			
 			img.src = "data:image/png;base64," + base64;
 		}
+        
+        function addMarker(long, lat, guid) {
+            var el = document.createElement('div');
+            el.className = 'mapMarker';
+            el.id = guid;
+            
+            // make a marker for each feature and add to the map
+            let marker = new mapboxgl.Marker(el)
+                .setLngLat([long, lat])
+                .addTo(map);
+
+            markers.push(marker);
+        }
+
+        function removeMarker(guid) {
+            let foundMarker;
+            let i = -1;
+            for (i = 0; i < markers.length; ++i) {
+                if (markers[i].getElement().tag == guid) {
+                    foundMarker = markers[i];
+                }
+            }
+
+            if (foundMarker) {
+                foundMarker.remove();
+                markers.splice(i, 1);
+            }
+        }
 
     </script>
 

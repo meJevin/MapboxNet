@@ -26,7 +26,7 @@ namespace MapboxNetWPF
         public event EventHandler PitchChanged;
         public event EventHandler BearingChanged;
         public event EventHandler Reloading;
-
+        public event EventHandler<string> MarkerClicked;
 
         public string AccessToken
         {
@@ -225,7 +225,7 @@ namespace MapboxNetWPF
         {
             if (webView.IsBrowserInitialized)
             {
-                //webView.ShowDevTools();
+                webView.ShowDevTools();
                 var script = Core.GetFrameScript(AccessToken, MapStyle);
                 webView.LoadHtml(script, "http://MapboxNet/");
                 webView.JavascriptObjectRepository.Register("relay", new Relay(notify, this.Dispatcher), true);
@@ -306,50 +306,10 @@ namespace MapboxNetWPF
                 Bearing = data.bearing;
                 _supressChangeEvents = false;
             }
-            //else if (data.type == "mouseDown")
-            //{
-            //    RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
-            //    {
-            //        RoutedEvent = Mouse.MouseDownEvent,
-            //        Source = this,
-            //    });
-            //}
-            //else if (data.type == "mouseMove")
-            //{
-            //    RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
-            //    {
-            //        RoutedEvent = Mouse.MouseMoveEvent,
-            //        Source = this,
-            //    });
-            //}
-            //else if (data.type == "mouseUp")
-            //{
-            //    RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
-            //    {
-            //        RoutedEvent = Mouse.MouseUpEvent,
-            //        Source = this,
-            //    });
-            //}
-            //else if (data.type == "mouseEnter")
-            //{
-            //    RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
-            //    {
-            //        RoutedEvent = Mouse.MouseEnterEvent,
-            //        Source = this,
-            //    });
-            //}
-            //else if (data.type == "mouseLeave")
-            //{
-            //    RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
-            //    {
-            //        RoutedEvent = Mouse.MouseLeaveEvent,
-            //        Source = this,
-            //    });
-            //}
-            //else if (data.type == "doubleClick")
-            //{
-
-            //}
+            else if (data.type == "markerClicked")
+            {
+                MarkerClicked?.Invoke(this, data.guid);
+            }
             else if (data.type == "error")
             {
 
@@ -440,6 +400,18 @@ namespace MapboxNetWPF
         //    var code = string.Join("\n\n", statements);
         //    await ExecuteAsync(code);
         //}
+
+        public void AddMarker(GeoLocation loc, string GUID)
+        {
+            var code = $"addMarker({loc.Latitude}, {loc.Longitude}, \"{GUID}\");";
+            Execute(code);
+        }
+
+        public void RemoveMarker(string GUID)
+        {
+            var code = $"removeMarker(\"{GUID}\");";
+            Execute(code);
+        }
 
         public void AddImage(string id, BitmapSource bitmapSource)
         {
