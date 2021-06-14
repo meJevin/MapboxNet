@@ -29,11 +29,11 @@
 		}
 		
       .mapMarker {
-        width: 25px;
-        height: 25px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
-        border:1px solid gray;
-        background-color:yellow;
+        background-image: url('https://docs.mapbox.com/help/demos/custom-markers-gl-js/mapbox-icon.png');
+        background-size: cover;
         cursor: pointer;
       }
 
