@@ -225,7 +225,9 @@ namespace MapboxNetWPF
         {
             if (webView.IsBrowserInitialized)
             {
+#if DEBUG
                 webView.ShowDevTools();
+#endif
                 var script = Core.GetFrameScript(AccessToken, MapStyle);
                 webView.LoadHtml(script, "http://MapboxNet/");
                 webView.JavascriptObjectRepository.Register("relay", new Relay(notify, this.Dispatcher), true);
