@@ -415,6 +415,12 @@ namespace MapboxNetWPF
             Execute(code);
         }
 
+        public void ClearMarkers()
+        {
+            var code = $"clearMarkers();";
+            Execute(code);
+        }
+
         public void AddImage(string id, BitmapSource bitmapSource)
         {
             using (MemoryStream bmp = new MemoryStream())
