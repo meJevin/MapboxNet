@@ -334,7 +334,6 @@ namespace MapboxNetWPF
         {
             try
             {
-
                 var task = webView.EvaluateScriptAsync("exec", new object[] { expression });
                 task.Wait();
 
@@ -412,7 +411,7 @@ namespace MapboxNetWPF
 
         public void AddMarker(GeoLocation loc, string GUID)
         {
-            var code = $"addMarker({loc.Latitude}, {loc.Longitude}, \"{GUID}\");";
+            var code = $"addMarker({loc.Longitude}, {loc.Latitude}, \"{GUID}\");";
             Execute(code);
         }
 
