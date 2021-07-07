@@ -26,6 +26,9 @@ namespace MapboxNetWPF
         public event EventHandler PitchChanged;
         public event EventHandler BearingChanged;
         public event EventHandler Reloading;
+        public event EventHandler MapMouseDown;
+        public event EventHandler MapMouseUp;
+        public event EventHandler MapMouseMove;
         public event EventHandler<string> MarkerClicked;
 
         public string AccessToken
@@ -315,6 +318,18 @@ namespace MapboxNetWPF
             else if (data.type == "error")
             {
 
+            }
+            else if (data.type == "mouseDown")
+            {
+                MapMouseDown?.Invoke(this, new EventArgs());
+            }
+            else if (data.type == "mouseUp")
+            {
+                MapMouseUp?.Invoke(this, new EventArgs());
+            }
+            else if (data.type == "mouseMove")
+            {
+                MapMouseMove?.Invoke(this, new EventArgs());
             }
         }
 
