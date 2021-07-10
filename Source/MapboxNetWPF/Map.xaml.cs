@@ -197,9 +197,10 @@ namespace MapboxNetWPF
             if(!Cef.IsInitialized)
             {
                 CefSettings settings = new CefSettings();
-                settings.CefCommandLineArgs.Add("disable-surfaces", "1");
-                settings.CefCommandLineArgs.Add("disable-gpu-compositing", "1");
+                settings.CefCommandLineArgs.Add("enable-gpu", "1");
+                settings.CefCommandLineArgs.Add("enable-webgl", "1");
                 settings.CefCommandLineArgs.Add("enable-begin-frame-scheduling", "1");
+                settings.CefCommandLineArgs.Add("--off-screen-frame-rate", "60");
                 //settings.SetOffScreenRenderingBestPerformanceArgs();
 
                 Cef.Initialize(settings);
@@ -232,6 +233,7 @@ namespace MapboxNetWPF
                 webView.ShowDevTools();
 #endif
                 var script = Core.GetFrameScript(AccessToken, MapStyle);
+                //webView.Address = "chrome://gpu";
                 webView.LoadHtml(script, "http://MapboxNet/");
                 webView.JavascriptObjectRepository.Register("relay", new Relay(notify, this.Dispatcher), true);
             }
