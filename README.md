@@ -1,8 +1,6 @@
 # MapboxNet
 
-## A comprehensive Mapbox map control for WPF and WinForms
-
-![](images/3d.png)
+## A comprehensive Mapbox map control for WPF
 
 Complete vector map client based on Mapbox GL JS built using C# 
 
