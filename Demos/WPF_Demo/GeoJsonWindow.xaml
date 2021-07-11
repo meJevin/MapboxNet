@@ -15,7 +15,8 @@
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom">
             <Button Content="Add" Click="AddMarker_Click"/>
-            <Button Content="Remove" Click="RemoveMarker_Click"/>
+            <Button Content="Add multiple" Click="Button_Click"/>
+            <Button Content="Clear" Click="RemoveMarker_Click"/>
         </StackPanel>
     </Grid>
 </Window>

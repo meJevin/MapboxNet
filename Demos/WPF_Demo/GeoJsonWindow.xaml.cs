@@ -57,9 +57,6 @@ namespace DemosWPF
                 Properties = 
                 new 
                 {
-                    someProp1 = false,
-                    someProp2 = 123,
-                    someProp3 = "str",
                 },
             });
             Markers.Add(loc, guid);
@@ -83,6 +80,35 @@ namespace DemosWPF
         private void Map_PointClicked(object sender, string e)
         {
             MessageBox.Show("Clicked point with guid: " + e);
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+            List<MapboxPoint> toAdd = new List<MapboxPoint>();
+
+            Random random = new Random();
+            for (int i = 0; i < 100; ++i)
+            {
+                string guid = Guid.NewGuid().ToString();
+
+                var Longitude = -180 + (random.NextDouble() * 360);
+                var Latitude = -90 + (random.NextDouble() * 180);
+
+                var loc = new GeoLocation(Latitude, Longitude);
+
+                toAdd.Add(new MapboxPoint()
+                {
+                    GUID = guid,
+                    Latitude = Latitude,
+                    Longitude = Longitude,
+                    Properties =
+                    new
+                    {
+                    },
+                });
+            }
+
+            await Map.AddPoints(toAdd);
         }
     }
 }

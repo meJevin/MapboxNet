@@ -35,7 +35,7 @@ map = new mapboxgl.Map({
 
 map.on('load', function () {
     ping({
-        "type": "load",
+        "type": "ready",
     });
 
     // Add a new source from our GeoJSON data and
@@ -220,11 +220,6 @@ map.on('load', function () {
             "type": "pointClicked",
             "guid": guid,
         });
-    });
-
-    ping({
-        "type": "ready",
-        "path": window.location.href,
     });
 });
 
