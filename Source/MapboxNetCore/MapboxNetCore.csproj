@@ -18,15 +18,29 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="web\frame.js" />
-    <None Remove="web\mapbox-gl.css" />
-    <None Remove="web\mapbox-gl.js" />
+    <None Remove="MapboxNetCore\css\index.css" />
+    <None Remove="MapboxNetCore\css\mapbox-gl.css" />
+    <None Remove="MapboxNetCore\html\index.html" />
+    <None Remove="MapboxNetCore\js\index.js" />
+    <None Remove="MapboxNetCore\lib\mapbox-gl.js" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="web\frame.js" />
-    <EmbeddedResource Include="web\mapbox-gl.css" />
-    <EmbeddedResource Include="web\mapbox-gl.js" />
+    <EmbeddedResource Include="MapboxNetCore\css\index.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapboxNetCore\css\mapbox-gl.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapboxNetCore\html\index.html">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapboxNetCore\js\index.js">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapboxNetCore\lib\mapbox-gl.js">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

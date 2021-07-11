@@ -12,7 +12,7 @@ namespace MapboxNetCore
 {
     public static class Core
     {
-        static string getEmbeddedResource(string name)
+        static string GetEmbeddedResource(string name)
         {
             return GetEmbeddedResource(typeof(Core), nameof(MapboxNetCore) + "." + name);
         }
@@ -28,19 +28,43 @@ namespace MapboxNetCore
             }
         }
 
-        public static string GetFrameScript(string accessToken, object style)
+        public static string GetFrameHTML(string accessToken, string style)
         {
-            var mainScript = getEmbeddedResource("web.frame.js");
-            var glScript = getEmbeddedResource("web.mapbox-gl.js");
-            var css = getEmbeddedResource("web.mapbox-gl.css");
+            // HTML
+            var indexHTML = GetEmbeddedResource("MapboxNetCore.html.index.html");
 
-            var result = mainScript
-                .Replace("{{mapbox-gl.js}}", glScript)
-                .Replace("{{mapbox-gl.css}}", css)
-                .Replace("{{style}}", JsonConvert.SerializeObject(style))
-                .Replace("{{accessToken}}", JsonConvert.SerializeObject(accessToken));
+            // JS
+            var indexJS = GetEmbeddedResource("MapboxNetCore.js.index.js");
+            var mapBoxJS = GetEmbeddedResource("MapboxNetCore.lib.mapbox-gl.js");
+            
+            // CSS
+            var indexCSS = GetEmbeddedResource("MapboxNetCore.css.index.css");
+            var mapBoxCSS = GetEmbeddedResource("MapboxNetCore.css.mapbox-gl.css");
 
-            return result;
+            // Insert access token and style into index.js
+            indexJS = indexJS.Replace("MAPBOX_ACCESS_TOKEN", accessToken);
+            indexJS = indexJS.Replace("MAPBOX_STYLE", style);
+
+            // Replace references to files in index.html with actual data from embedded resources
+
+            // References to JS
+            indexHTML = indexHTML.Replace(
+                "<script src=\"../lib/mapbox-gl.js\"></script>",
+                $"<script>\n{mapBoxJS}\n</script>");
+            indexHTML = indexHTML.Replace(
+                "<script src=\"../js/index.js\"></script>",
+                $"<script>\n{indexJS}\n</script>");
+
+            // References to CSS
+            indexHTML = indexHTML.Replace(
+                "<link rel=\"stylesheet\" href=\"../css/index.css\">", 
+                $"<style>\n{indexCSS}\n</style>");
+            indexHTML = indexHTML.Replace(
+                "<link rel=\"stylesheet\" href=\"../css/mapbox-gl.css\">",
+                $"<style>\n{mapBoxCSS}\n</style>");
+
+            // Return final HTML
+            return indexHTML;
         }
 
         public static string ToLowerCamelCase(string s)
@@ -53,21 +77,21 @@ namespace MapboxNetCore
             return Char.ToUpperInvariant(s[0]) + s.Substring(1);
         }
 
-        static object plainifyJson(JToken token)
+        static object PlainifyJson(JToken token)
         {
             if (token.Type == JTokenType.Object)
             {
                 IDictionary<string, JToken> dict = token as JObject;
                 
                 dynamic expandos = dict.Aggregate(new EnhancedExpandoObeject() as IDictionary<string, Object>,
-                            (a, p) => { a.Add(p.Key, plainifyJson(p.Value)); return a; });
+                            (a, p) => { a.Add(p.Key, PlainifyJson(p.Value)); return a; });
 
                 return expandos;
             }
             else if (token.Type == JTokenType.Array)
             {
                 var array = token as JArray;
-                return array.Select(item => plainifyJson(item)).ToList();
+                return array.Select(item => PlainifyJson(item)).ToList();
             }
             else
             {
@@ -86,7 +110,7 @@ namespace MapboxNetCore
 
             dynamic data = JsonConvert.DeserializeObject("{a:" + json + "}");
             var deserialized = data.a as JToken;
-            return plainifyJson(deserialized);
+            return PlainifyJson(deserialized);
         }
     }
 }

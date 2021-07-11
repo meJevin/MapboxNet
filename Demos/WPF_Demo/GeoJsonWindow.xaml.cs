@@ -37,32 +37,42 @@ namespace DemosWPF
             // converter: https://jsfiddle.net/aliashrafx/c7pxomjb/39/
 
             //Map.Invoke.AddLayer(pikachuLayer);
-
-            for (int i = 0; i < 250; ++i)
-            {
-                AddMarker();
-            }
         }
 
-        private void AddMarker()
+        private async Task AddPoint()
         {
             string guid = Guid.NewGuid().ToString();
             Random random = new Random();
 
-            var Latitude = (random.NextDouble() * 179) - 90;
-            var Longitude = (random.NextDouble() * 179) - 90;
+            var Longitude = -180 + (random.NextDouble() * 360);
+            var Latitude = -90 + (random.NextDouble() * 180);
 
             var loc = new GeoLocation(Latitude, Longitude);
 
-            Map.AddMarker(loc, guid);
+            await Map.AddPoint(new MapboxPoint() 
+            {
+                GUID = guid,
+                Latitude = Latitude,
+                Longitude = Longitude,
+                Properties = 
+                new 
+                {
+                    someProp1 = false,
+                    someProp2 = 123,
+                    someProp3 = "str",
+                },
+            });
             Markers.Add(loc, guid);
         }
 
 
 
-        private void AddMarker_Click(object sender, RoutedEventArgs e)
+        private async void AddMarker_Click(object sender, RoutedEventArgs e)
         {
-            AddMarker();
+            for (int i = 0; i < 100; ++i)
+            {
+               await AddPoint();
+            }
         }
 
         private void RemoveMarker_Click(object sender, RoutedEventArgs e)
@@ -70,9 +80,9 @@ namespace DemosWPF
             Map.FlyTo(new GeoLocation(20, 40), 10);
         }
 
-        private void Map_MarkerClicked(object sender, string e)
+        private void Map_PointClicked(object sender, string e)
         {
-            MessageBox.Show("Clicked marker with guid: " + e);
+            MessageBox.Show("Clicked point with guid: " + e);
         }
     }
 }

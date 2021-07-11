@@ -66,7 +66,7 @@ namespace DemosWPF
             
             // You can create a hybrid satellite view as well by using a style that takes both Vector Tiles as Raster Tiles
 
-            Map.MapStyle = style;
+            //Map.MapStyle = style;
         }
     }
 }

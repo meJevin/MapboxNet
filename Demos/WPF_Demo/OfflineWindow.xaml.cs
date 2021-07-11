@@ -55,7 +55,7 @@ namespace DemosWPF
                 ["id"] = "44004506-1129-4d81-9889-800854993041",
             };
 
-            Map.MapStyle = style;
+            //Map.MapStyle = style;
         }
 
         private void Map_Ready(object sender, EventArgs e)

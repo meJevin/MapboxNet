@@ -10,7 +10,7 @@
     <Grid>
 
         <mapbox:Map Name="Map" Center="40.7052768300975, -74.0124907170679" Zoom="5" Styled="Map_Styled"
-                    MarkerClicked="Map_MarkerClicked"></mapbox:Map>
+                    PointClicked="Map_PointClicked"></mapbox:Map>
         <Image Source="./images/pikachu.png" Visibility="Collapsed" Name="pikachuImage"></Image>
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom">
