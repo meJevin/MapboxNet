@@ -244,7 +244,6 @@ namespace MapboxNetWPF
 #if DEBUG && SHOW_DEV_TOOLS_MAPBOX_NET
                 Browser.ShowDevTools();
 #endif
-                Browser.ShowDevTools();
                 var script = Core.GetFrameHTML(AccessToken, MapStyle);
                 //webView.Address = "chrome://gpu";
                 Browser.LoadHtml(script, "http://MapboxNet/");
@@ -425,12 +424,12 @@ namespace MapboxNetWPF
 
         public async Task AddPoint(MapboxPoint p)
         {
-            await Browser.EvaluateScriptAsync("addPoint", JsonConvert.SerializeObject(p));
+            var res = await Browser.EvaluateScriptAsync("addPoint", JsonConvert.SerializeObject(p));
         }
 
         public async Task AddPoints(List<MapboxPoint> p)
         {
-            await Browser.EvaluateScriptAsync("addPoints", JsonConvert.SerializeObject(p));
+            var res = await Browser.EvaluateScriptAsync("addPoints", JsonConvert.SerializeObject(p));
         }
 
         public async Task RemovePoint(string GUID)
