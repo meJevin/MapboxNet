@@ -403,6 +403,12 @@ namespace MapboxNetWPF
             try
             {
                 var result = await Browser.EvaluateScriptAsync("exec", new object[] { expression });
+                
+                if (result.Result == null)
+                {
+                    return null;
+                }
+                
                 return Core.DecodeJsonPlain(result.Result.ToString());
             } catch(Exception e)
             {
