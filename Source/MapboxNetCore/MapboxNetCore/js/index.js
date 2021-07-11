@@ -265,7 +265,7 @@ function addPoint(jsonStrData) {
     map.getSource('points').setData(points);
 }
 
-function addPoint(jsonStrData) {
+function addPoints(jsonStrData) {
     let data = JSON.parse(jsonStrData);
 
     for (let i = 0; i < data.length; ++i) {
