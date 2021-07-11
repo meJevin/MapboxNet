@@ -6,6 +6,8 @@
 
 Complete vector map client based on Mapbox GL JS built using C# 
 
+This is modified version of the original library for use with PVScan
+
 ## Features
 
 The map view has almost all the features of Mapbox GL JS, such as:
