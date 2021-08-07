@@ -1,3 +1,4 @@
+
 let map = null;
 let ping = (args) => { console.log(args); };
 
@@ -107,7 +108,7 @@ map.on('load', function () {
                 });
             }
         );
-        
+
         ping({
             "type": "pointClusterClicked",
         });
@@ -202,7 +203,7 @@ map.on('load', function () {
     map.on('mouseleave', 'clusters', function () {
         map.getCanvas().style.cursor = '';
     });
-    
+
     map.on('mouseenter', 'unclustered-point', function () {
         map.getCanvas().style.cursor = 'pointer';
     });
@@ -212,10 +213,8 @@ map.on('load', function () {
 
     // Handle click on unclustered points
     map.on('click', 'unclustered-point', function (e) {
-        console.log("Clicked on unclustered");
-
         let guid = e.features[0].properties.guid;
-        
+
         ping({
             "type": "pointClicked",
             "guid": guid,
@@ -232,6 +231,8 @@ function flyTo(long, lat, zoom) {
 
 function addPoint(jsonStrData) {
     let data = JSON.parse(jsonStrData);
+
+    console.log("Adding point", data);
 
     /*
         We're getting:
@@ -250,9 +251,9 @@ function addPoint(jsonStrData) {
         "geometry": {
             "type": "Point",
             "coordinates": [
-                data.Longitude, 
-                data.Latitude, 
-                0 
+                data.Longitude,
+                data.Latitude,
+                0
             ],
         }
     });
@@ -273,9 +274,9 @@ function addPoints(jsonStrData) {
             "geometry": {
                 "type": "Point",
                 "coordinates": [
-                    data[i].Longitude, 
-                    data[i].Latitude, 
-                    0 
+                    data[i].Longitude,
+                    data[i].Latitude,
+                    0
                 ],
             }
         });
@@ -285,7 +286,9 @@ function addPoints(jsonStrData) {
 }
 
 function removePoint(guid) {
-    points.features = points.features.filter(f => f.properties.guid == guid);
+    console.log("Removing point", guid);
+
+    points.features = points.features.filter(f => f.properties.guid != guid);
 
     map.getSource('points').setData(points);
 }
