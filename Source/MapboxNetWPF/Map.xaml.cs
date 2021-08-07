@@ -434,7 +434,7 @@ namespace MapboxNetWPF
 
         public async Task RemovePoint(string GUID)
         {
-            var code = $"removePoint({GUID});";
+            var code = $"removePoint(\"{GUID}\");";
 
             await ExecuteAsync(code);
         }
